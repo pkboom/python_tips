@@ -41,3 +41,29 @@ for i in range(len(X)):
             cwd[name] = size
 
 print(d)
+print("________________________________")
+
+# loop through d
+# print name and size
+def print_dict(d, path):
+    dir_size = {}
+    total = 0
+
+    for key, value in d.items():
+        if not value:
+            continue
+        if type(value) is dict:
+            dir_size[path] = print_dict(value, path + key + "/")
+        else:
+            total += int(value)
+
+        print(path)
+        print(total)
+        total += total
+
+    dir_size[path] = total
+
+    return total
+
+
+dirs_size = print_dict(d["/"], "/")
