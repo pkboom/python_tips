@@ -1,0 +1,14 @@
+$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls a
+8504156 c.dat
+dir d
+$ cd d
+8504156 c.dat
+$ cd ..
+$ cd ..
