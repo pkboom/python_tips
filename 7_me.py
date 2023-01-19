@@ -28,8 +28,6 @@ for i in range(len(X)):
         print("cwd", cwd)
 
     else:
-        print(X[i])
-        # if file, then add to dict
         size, name = X[i].split()
 
         if name in cwd:
@@ -40,30 +38,28 @@ for i in range(len(X)):
         else:
             cwd[name] = size
 
-print(d)
-print("________________________________")
 
-# loop through d
-# print name and size
+print(d)
+
+
 def print_dict(d, path):
-    dir_size = {}
     total = 0
+    y = 0
 
     for key, value in d.items():
-        if not value:
-            continue
+        print(path, key, value)
         if type(value) is dict:
-            dir_size[path] = print_dict(value, path + key + "/")
+            if not value:
+                continue
+            x, y = print_dict(value, path + key + "/")
         else:
             total += int(value)
 
-        print(path)
-        print(total)
-        total += total
-
-    dir_size[path] = total
-
-    return total
+    if y > 0:
+        return [(path, total + y)] + x, total + y
+    else:
+        return [(path, total)], total
 
 
-dirs_size = print_dict(d["/"], "/")
+asdf, asdf2 = print_dict(d["/"], "/")
+print(asdf)
