@@ -1,65 +1,53 @@
 with open("7.in") as f:
-    X = [l.strip() for l in f.readlines()]
+    lines = [l.strip() for l in f.readlines()]
 
-d = {"/": {}}
-h = []
-cwd = []
+d = {}
 
-for i in range(len(X)):
-    if X[i].startswith("$ cd"):
-        dir = X[i][5:]
+for l in lines:
+    if l.startswith("$ cd"):
+        dir = l[5:]
 
         if dir == "/":
-            h = ["/"]
+            cwd = "/"
+        elif dir == "..":
+            cwd = cwd[: cwd[:-1].rfind("/")] + "/"
+        else:
+            cwd = cwd + dir + "/"
 
-        if dir == "..":
-            h.pop()
+        if cwd not in d:
+            d[cwd] = {}
 
-        if dir in cwd:
-            h.append(dir)
-
-        print("hierarchy: ", h)
-    elif X[i].startswith("$ ls"):
-        cwd = d
-
-        for h_ in h:
-            cwd = cwd[h_]
-
-        print("cwd", cwd)
+    elif l.startswith("$ ls"):
+        continue
 
     else:
-        size, name = X[i].split()
-
-        if name in cwd:
-            continue
+        size, name = l.split()
 
         if size == "dir":
-            cwd[name] = {}
+            d[cwd][name] = "dir"
         else:
-            cwd[name] = size
+            d[cwd][name] = size
 
+s = {}
 
-print(d)
-
-
-def print_dict(d, path):
+for key, value in d.items():
     total = 0
-    y = 0
+    for m, n in value.items():
+        if n != "dir":
+            total += int(n)
 
-    for key, value in d.items():
-        print(path, key, value)
-        if type(value) is dict:
-            if not value:
-                continue
-            x, y = print_dict(value, path + key + "/")
-        else:
-            total += int(value)
+    s[key] = total
 
-    if y > 0:
-        return [(path, total + y)] + x, total + y
-    else:
-        return [(path, total)], total
+for key, value in d.items():
+    for m, n in value.items():
+        if n == "dir":
+            s[key] += sum([s2 for s1, s2 in s.items() if s1.startswith(key + m)])
 
 
-asdf, asdf2 = print_dict(d["/"], "/")
-print(asdf)
+total_size = sum([v for k, v in s.items() if v < 100000])
+print(total_size)
+
+used = s["/"]
+free = 70000000 - used
+required = min([v for k, v in s.items() if v > (30000000 - free)])
+print(required)
