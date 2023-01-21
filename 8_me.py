@@ -2,6 +2,7 @@ with open("8.in") as f:
     lines = [l.strip() for l in f]
 
 visible = []
+scenic = []
 
 
 def in_forest(lines, xp, yp, direction, count):
@@ -56,6 +57,32 @@ def is_blocking(lines, yv, yp, xv, xp):
     return True
 
 
+def get_scenic_score(lines, yv, yp, xv, xp):
+    score = 1
+
+    for direction in ["left", "right", "up", "down"]:
+        c = 1
+
+        while True:
+            position, inside_forest = in_forest(lines, xp, yp, direction, c)
+
+            if not inside_forest:
+                print("inside_forest c", c)
+                score *= c - 1
+                break
+
+            value = get_value(lines, xp, yp, direction, position)
+
+            if value >= yv:
+                print("value >= yv c", c)
+                score *= c
+                break
+
+            c += 1
+
+    return score
+
+
 for xp in range(len(lines)):
     xv = lines[xp]
 
@@ -65,4 +92,8 @@ for xp in range(len(lines)):
         if not is_blocking(lines, yv, yp, xv, xp):
             visible.append((xp, yp))
 
+        scenic.append(get_scenic_score(lines, yv, yp, xv, xp))
+
 print(len(set(visible)))
+print(scenic)
+print(max(scenic))
