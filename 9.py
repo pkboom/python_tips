@@ -44,8 +44,7 @@ for line in lines:
         T[0] = adjust(H, T[0])
         for i in range(1, 9):
             T[i] = adjust(T[i - 1], T[i])
-        print("add to P1", T[0])
         P1.add(T[0])
         P2.add(T[8])
 print(len(P1))
-# print(len(P2))
+print(len(P2))
