@@ -1,34 +1,43 @@
 with open("11.in") as f:
     lines = [l.strip() for l in f.read().strip().split("\n\n")]
 
-M = []
 I = []
+M = [[], []]
+OP = []
+DIV = []
+TRUE = []
+FALSE = []
 
 for l in lines:
-    _, items, _ = l.split("\n")
-    items = items.strip()[16:].split(", ")
-    M.append(items)
-    I.append(0)
-    print(items)
-    print(c.strip()[7:-1])
-print(M, I)
+    _, items, op, test, true, false = l.split("\n")
+    M[0].append([int(i.strip()) for i in (items.split(":")[-1].split(","))])
+    M[1].append([int(i.strip()) for i in (items.split(":")[-1].split(","))])
+    words = op.split()
+    op = "".join(words[-3:])
+    OP.append(lambda old, op=op: eval(op))
+    DIV.append(int(test.split(" ")[-1]))
+    TRUE.append(int(true.split(" ")[-1]))
+    FALSE.append(int(false.split(" ")[-1]))
 
+lcm = 1
+for k in DIV:
+    lcm = lcm * k
 
-for _ in range(20):
-    for l in lines:
-        ll = [ll.strip() for ll in l.split("\n")]
-        m = int(ll[0][7:-1])
-        for n in M[m]:
-            o = int(n) if ll[2][23:] == "old" else int(ll[2][23:])
-            yy = int(n) * o if ll[2][21] == "*" else int(n) + o
-            w = yy // 3
-            if w % int(ll[3][19:]) == 0:
-                M[int(ll[4][25:])].append(w)
-            else:
-                M[int(ll[5][25:])].append(w)
-            I[m] += 1
-        M[m] = []
+for j, _ in enumerate([range(20), range(10000)]):
+    I = [0 for ___ in range(len(M[j]))]
+    for __ in _:
+        for i, m in enumerate(M[j]):
+            for item in m:
+                item = OP[i](item)
+                if j == 1:
+                    item %= lcm
+                else:
+                    item = item // 3
+                if item % DIV[i] == 0:
+                    M[j][TRUE[i]].append(item)
+                else:
+                    M[j][FALSE[i]].append(item)
+                I[i] += 1
+            M[j][i] = []
 
-print("I", I)
-print(sorted(I)[-1] * sorted(I)[-2])
-print("M", M)
+    print("p{}: {}".format(j + 1, sorted(I)[-1] * sorted(I)[-2]))

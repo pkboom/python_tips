@@ -23,13 +23,12 @@ for monkey in data.split("\n\n"):
     DIV.append(int(test.split()[-1]))
     TRUE.append(int(true.split()[-1]))
     FALSE.append(int(false.split()[-1]))
-
 START = deepcopy(M)
 
 # Want to know for each item if it is divisible by e.g. 23,19,13,17
 # If we just wanted to know if its divisible by 23, we can just keep track of the number modulo 23.
-# x+a is divisible by 23 iff (x%23)+a is divisible by 23
-# x*a is divisible by 23 iff (x%23)*a is divisible by 23
+# x+a is divisible by 23 if (x%23)+a is divisible by 23
+# x*a is divisible by 23 if (x%23)*a is divisible by 23
 # We can keep track of the number modulo 23*19*13*17
 lcm = 1
 for x in DIV:
