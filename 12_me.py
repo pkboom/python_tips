@@ -3,14 +3,8 @@ from copy import deepcopy
 with open("12.in") as f:
     lines = [l.strip() for l in f]
 
-H = []
-P = []
-x = 0
-y = 0
 r_len = len(lines)
 c_len = len(lines[0])
-hp = []
-prev = []
 d = [(1, 0), (0, 1), (-1, 0), (0, -1)]
 p = ["V", ">", "^", "<"]
 found_e = False
@@ -49,6 +43,6 @@ def move(x, y, h=[]):
     return next[key]
 
 
-path = move(x, y, [(x, y)])
+path = move(0, 0, [(0, 0)])
 
 print("path", path)
