@@ -1,48 +1,38 @@
-from copy import deepcopy
+from collections import defaultdict, deque
 
 with open("12.in") as f:
     lines = [l.strip() for l in f]
 
-r_len = len(lines)
-c_len = len(lines[0])
-d = [(1, 0), (0, 1), (-1, 0), (0, -1)]
-p = ["V", ">", "^", "<"]
-found_e = False
+G = []
+for line in lines:
+    G.append(line)
+R = len(G)
+C = len(G[0])
 
+E = [[0 for _ in range(C)] for _ in range(R)]
 
-def move(x, y, h=[]):
-    next = [[], [], [], []]
+Q = deque()
+for i in range(R):
+    for j in range(C):
+        if G[i][j] == "E":
+            E[i][j] = 26
+        elif G[i][j] == "S":
+            Q.append(((i, j), 0))
+            E[i][j] = 1
+        else:
+            E[i][j] = ord(G[i][j]) - ord("a") + 1
 
-    for i, dd in enumerate(d):
-        r, c = dd
-        rr, cc = x + r, y + c
-
-        if rr < 0 or cc < 0 or rr >= r_len or cc >= c_len:
-            continue
-
-        if (rr, cc) in h:
-            continue
-
-        if (ord(lines[rr][cc]) - ord(lines[x][y])) == 1:
-            next[i] = move(rr, cc, h + [(rr, cc)])
-        elif lines[rr][cc] == "E":
-            return h + [(rr, cc)]
-        elif (ord(lines[rr][cc]) - ord(lines[x][y])) <= 0:
-            next[i] = move(rr, cc, h + [(rr, cc)])
-
-    next = [n for n in next if n]
-    if not next:
-        return []
-    l = 99999
-    key = 0
-    for i, n in enumerate(next):
-        if len(n) < l:
-            l = len(n)
-            key = i
-
-    return next[key]
-
-
-path = move(0, 0, [(0, 0)])
-
-print("path", path)
+S = set()
+while True:
+    (r, c), d = Q.popleft()
+    if (r, c) in S:
+        continue
+    S.add((r, c))
+    if G[r][c] == "E":
+        print(d)
+        break
+    for dr, dc in [(1, 0), (0, 1), (-1, 0), (0, -1)]:
+        rr = dr + r
+        cc = dc + c
+        if 0 <= rr < R and 0 <= cc < C and E[r][c] + 1 >= E[rr][cc]:
+            Q.append(((rr, cc), d + 1))
