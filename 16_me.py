@@ -28,26 +28,23 @@ for valve, rate in [r for r in rates.items() if r[1] != 0 or r[0] == "AA"]:
 all_open = 1
 for valve in dist["AA"]:
     all_open = all_open | bitmask[valve]
-print(all_open)
-for valve, distance in dist.items():
-    print(valve, distance)
-time = 30
+
 pressures = []
 for valve, distance in dist["AA"].items():
-    queue = [
-        (time - distance, valve, bitmask[valve] | bitmask["AA"], 0)
-    ]  # time, valve, bit, pressure
+    time = 30
+    queue = deque(
+        [(time - distance, valve, bitmask[valve] | bitmask["AA"], 0)]
+    )  # time, valve, bit, pressure
     while queue:
-        time, current, b, pressure = queue.pop()
-        if time <= 0 or b & all_open == all_open:
+        if time - 1 <= 0:
             pressures.append(pressure)
-            print(current, time, pressure)
             continue
-        p = (time - 1) * rates[current]
+        time, current, b, pressure = queue.popleft()
+        pressure += (time - 1) * rates[current]
+        if b & all_open == all_open:
+            pressures.append(pressure)
+            continue
         for t in dist[current].keys():
             if b & bitmask[t] == 0:
-                queue.append(
-                    (time - 1 - dist[current][t], t, b | bitmask[t], p + pressure)
-                )
-
+                queue.append((time - 1 - dist[current][t], t, b | bitmask[t], pressure))
 print(max(pressures))
