@@ -29,23 +29,30 @@ all_open = bitmask["AA"]
 for valve in dist["AA"]:
     all_open = all_open | bitmask[valve]
 
-pressures = []
-for valve, distance in dist["AA"].items():
-    time = 30
-    queue = [
-        (time - distance, valve, bitmask[valve] | bitmask["AA"], 0)
-    ]  # time, valve, bit, pressure
-    while queue:
-        if time - 1 <= 0:
-            pressures.append(pressure)
+cache = {}
+
+
+def get_max_pressure(valve, distance, b):
+    if b & all_open == all_open:
+        return 0
+    if (valve, distance, b) in cache:
+        return cache[(valve, distance, b)]
+    pressure = 0
+    if rates[valve] != 0:
+        distance -= 1
+        pressure = distance * rates[valve]
+
+    sum = [0]
+    for v, d in dist[valve].items():
+        if v == "AA":
             continue
-        time, current, b, pressure = queue.pop()
-        pressure += (time - 1) * rates[current]
-        maxval = max(maxval, pressure)
-        if b & all_open == all_open:
-            pressures.append(pressure)
+        if b & bitmask[v] != 0:
             continue
-        for t in dist[current].keys():
-            if b & bitmask[t] == 0:
-                queue.append((time - 1 - dist[current][t], t, b | bitmask[t], pressure))
-print(max(pressures))
+        if distance - d <= 0:
+            continue
+        sum.append(get_max_pressure(v, distance - d, bitmask[v] | b))
+    cache[(valve, distance, b)] = pressure + max(sum)
+    return pressure + max(sum)
+
+
+print(get_max_pressure("AA", 30, bitmask["AA"]))
