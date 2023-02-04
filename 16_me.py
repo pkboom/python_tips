@@ -3,15 +3,12 @@ from collections import deque
 rates = {}
 tunnels = {}
 bitmask = {}
-nonempty = []
 for b, line in enumerate(open("16.in")):
     scan = line.split()
     v, r, t = scan[1], int(scan[4][5:-1]), [_.strip(",") for _ in scan[9:]]
     rates[v] = int(r)
     tunnels[v] = t
     bitmask[v] = 1 << b
-    if int(r) == 0:
-        nonempty.append(v)
 
 dist = {}
 for valve, rate in [r for r in rates.items() if r[1] != 0 or r[0] == "AA"]:
@@ -28,10 +25,13 @@ for valve, rate in [r for r in rates.items() if r[1] != 0 or r[0] == "AA"]:
                 dist[origin][t] = distance + 1
             queue.append((origin, t, b | bitmask[t], distance + 1))
 
-all_open = bitmask["AA"]
-for valve in dist["AA"]:
-    all_open = all_open | bitmask[valve]
+bitmask = {"AA": 1}
+b = 1
+for v in dist["AA"]:
+    bitmask[v] = 1 << b
+    b += 1
 
+all_open = (1 << len(bitmask)) - 1
 cache = {}
 
 
@@ -60,17 +60,11 @@ def get_max_pressure(valve, distance, b):
 
 # print(get_max_pressure("AA", 30, bitmask["AA"]))
 
-print(nonempty)
 maxval = 0
-b = 0
-xor = (1 << len(bitmask)) - 1
-for b in range((1 << len(bitmask) - 1) // 2 + 1):
-    # print(bin(b | bitmask["AA"]))
-    # print(bin(b ^ xor | bitmask["AA"]))
-    b = b & all_open
+for b in range(1, all_open // 2 + 1):
     maxval = max(
         maxval,
         get_max_pressure("AA", 26, b | bitmask["AA"])
-        + get_max_pressure("AA", 26, b ^ xor | bitmask["AA"]),
+        + get_max_pressure("AA", 26, b ^ all_open | bitmask["AA"]),
     )
 print(maxval)
