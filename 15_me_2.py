@@ -33,14 +33,50 @@ c = 0
 #             break
 # print(c)
 
-for x in range(min_x, max_x + 1):
-    for y in range(min_y, max_y + 1):
-        # if (x, y) in beacons:
-        #     continue
-        # if (x, y) in sensors:
-        #     continue
-        for i, (sx, sy) in enumerate(sensors):
-            if abs(x - sx) + abs(y - sy) <= dist[i]:
-                break
-        else:
-            print(x, y, x * 4000000 + y)
+# for y in range(min_y, max_y + 1):
+#     for x in range(min_x, max_x + 1):
+#         for i, (sx, sy) in enumerate(sensors):
+#             if abs(x - sx) + abs(y - sy) <= dist[i]:
+#                 break
+#         else:
+#             print(x, y, x * 4000000 + y)
+
+outside = set()
+for i, (sx, sy) in enumerate(sensors):
+    x = sx + dist[i]
+    edge = set()
+    queue = [(x, sy)]
+    while queue:
+        x, y = queue.pop()
+        for mx, my in (
+            (0, 1),
+            (0, -1),
+            (1, 0),
+            (-1, 0),
+            (1, 1),
+            (1, -1),
+            (-1, 1),
+            (-1, -1),
+        ):
+            xx, yy = x + mx, y + my
+            if (
+                abs(xx - sx) + abs(yy - sy) > dist[i]
+                and xx > 0
+                and yy > 0
+                and xx < 4000000
+                and yy < 4000000
+            ):
+                outside.add((xx, yy))
+                continue
+            if (xx, yy) in edge:
+                continue
+            if abs(xx - sx) + abs(yy - sy) == dist[i]:
+                edge.add((xx, yy))
+                queue.append((xx, yy))
+
+for x, y in outside:
+    for i, (sx, sy) in enumerate(sensors):
+        if abs(x - sx) + abs(y - sy) <= dist[i]:
+            break
+    else:
+        print(x, y, x * 4000000 + y)
