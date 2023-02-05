@@ -26,21 +26,18 @@ for i, (sx, sy) in enumerate(sensors):
         if (sx - mx, sy) == beacons[i]:
             beacon_touched = True
         elif (sx - mx, sy) not in sensors:
-            if sy == y:
-                empty.add((sx - mx, sy))
+            empty.add((sx - mx, sy))
 
         for mxx in range(-mx + 1, 1):
             my += 1
             if (sx + mxx, sy - my) == beacons[i]:
                 beacon_touched = True
             elif (sx + mxx, sy - my) not in sensors:
-                if sy - my == y:
-                    empty.add((sx + mxx, sy - my))
+                empty.add((sx + mxx, sy - my))
             if (sx + mxx, sy + my) == beacons[i]:
                 beacon_touched = True
             elif (sx + mxx, sy + my) not in sensors:
-                if sy + my == y:
-                    empty.add((sx + mxx, sy + my))
+                empty.add((sx + mxx, sy + my))
 
         my = 0
         for mxx in range(mx - 1, 0, -1):
@@ -49,39 +46,35 @@ for i, (sx, sy) in enumerate(sensors):
             if (sx + mxx, sy + my) == beacons[i]:
                 beacon_touched = True
             elif (sx + mxx, sy + my) not in sensors:
-                if sy + my == y:
-                    empty.add((sx + mxx, sy + my))
+                empty.add((sx + mxx, sy + my))
             if (sx + mxx, sy - my) == beacons[i]:
                 beacon_touched = True
             elif (sx + mxx, sy - my) not in sensors:
-                if sy - my == y:
-                    empty.add((sx + mxx, sy - my))
+                empty.add((sx + mxx, sy - my))
         my = 0
         # print((sx + mx, sy + my))
         if (sx + mx, sy + my) == beacons[i]:
             beacon_touched = True
         elif (sx + mx, sy + my) not in sensors:
-            if sy + my == y:
-                empty.add((sx + mx, sy + my))
+            empty.add((sx + mx, sy + my))
         if beacon_touched:
             break
 
-# min_x = min([x for x, _ in sensors] + ([x for x, _ in beacons]))
-# max_x = max([x for x, _ in sensors] + ([x for x, _ in beacons]))
-# min_y = min([y for _, y in sensors] + ([y for _, y in beacons]))
-# max_y = max([y for _, y in sensors] + ([y for _, y in beacons]))
-# for j in range(min_y, max_y + 1):
-#     print(j, end="")
-#     for i in range(min_x - 2, max_x + 2):
-#         if (i, j) in beacons:
-#             print("B", end="")
-#         elif (i, j) in sensors:
-#             print("S", end="")
-#         elif (i, j) in empty:
-#             print("#", end="")
-#         else:
-#             print(".", end="")
-#     print()
+min_x = min([x for x, _ in sensors] + ([x for x, _ in beacons]))
+max_x = max([x for x, _ in sensors] + ([x for x, _ in beacons]))
+min_y = min([y for _, y in sensors] + ([y for _, y in beacons]))
+max_y = max([y for _, y in sensors] + ([y for _, y in beacons]))
+for j in range(min_y, max_y + 1):
+    for i in range(min_x - 2, max_x + 2):
+        if (i, j) in beacons:
+            print("B", end="")
+        elif (i, j) in sensors:
+            print("S", end="")
+        elif (i, j) in empty:
+            print("#", end="")
+        else:
+            print(".", end="")
+    print()
 # for x, y in empty:
 #     if y == 2000000:
 #         c += 1
