@@ -31,16 +31,16 @@ c = 0
 #         if abs(x - sx) + abs(y - sy) <= dist[i]:
 #             c += 1
 #             break
-print(c)
+# print(c)
 
-# for x in range(min_x, max_x + 1):
-#     for y in range(min_y, max_y + 1):
-#         if (x, y) in beacons:
-#             continue
-#         if (x, y) in sensors:
-#             continue
-#         for i, (sx, sy) in enumerate(sensors):
-#             if abs(x - sx) + abs(y - sy) <= dist[i]:
-#                 break
-#         else:
-#             print(x, y, x * 4000000 + y)
+for x in range(min_x, max_x + 1):
+    for y in range(min_y, max_y + 1):
+        # if (x, y) in beacons:
+        #     continue
+        # if (x, y) in sensors:
+        #     continue
+        for i, (sx, sy) in enumerate(sensors):
+            if abs(x - sx) + abs(y - sy) <= dist[i]:
+                break
+        else:
+            print(x, y, x * 4000000 + y)
