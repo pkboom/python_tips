@@ -1,7 +1,7 @@
 from collections import deque
 
 D = open("17.in").read().strip()
-
+LD = len(D)
 R = [
     [0b0011110],
     [0b0001000, 0b0011100, 0b0001000],
@@ -9,9 +9,6 @@ R = [
     [0b0010000, 0b0010000, 0b0010000, 0b0010000],
     [0b0011000, 0b0011000],
 ]
-
-L = [len(l) for l in R]
-
 C1 = [0b1111111]
 C2 = []
 
@@ -64,22 +61,35 @@ def down():
         return False
 
 
+def get_direction(dc):
+    return D[dc % LD]
+
+
 rc = 0
 dc = 0
 while True:
     # put rock in chamber2
-    C2 = [R[rc % 4].copy(), 0]
-    for i in range(3 + len(R[rc % 4])):
+    C2 = [R[rc % 5].copy(), 0]
+    for i in range(len(C1)):
         if C1[i] != 0:
+            break
+    if rc == 2022:
+        print(len(C1) - i - 1)
+        break
+    if i <= len(R[rc % 5]) + 2:
+        for _ in range(len(R[rc % 5]) + 3 - i):
             C1.insert(0, 0b0000000)
+    else:
+        for _ in range(i - (3 + len(R[rc % 5]))):
+            C1.remove(0)
     while True:  # start moving, if hit bottom, stop
-        d = D[dc]  # direction
-        draw_chamber()
+        # draw_chamber()
+        d = get_direction(dc)
         move(d)
-        draw_chamber()
+        dc += 1
+        # draw_chamber()
         # down
         if down():
             break
-        draw_chamber()
-        dc += 1
+        # draw_chamber()
     rc += 1
