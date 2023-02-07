@@ -1,6 +1,6 @@
 from collections import deque
 
-M = open("17.in").read().strip()
+D = open("17.in").read().strip()
 
 R = [
     [0b0011110],
@@ -10,48 +10,76 @@ R = [
     [0b0011000, 0b0011000],
 ]
 
-C = [0b0000000, 0b0000000, 0b0000000, 0b1111111]
+L = [len(l) for l in R]
+
+C1 = [0b1111111]
+C2 = []
 
 
 def draw_chamber():
-    for i in C:
-        print(bin(i)[2:].rjust(7, "0"))
+    for i in range(len(C1)):
+        print(
+            bin(
+                (C1[i] | C2[0][i - C2[1]])
+                if C2[1] <= i < (C2[1] + len(C2[0]))
+                else C1[i]
+            )[2:].rjust(7, "0")
+        )
+    print("=================================")
 
 
 def move(d):
-    # right wall, left wall, or overlap with top of bottom
-    if c == "<":
-        return C[0] * 2
+    R2 = []
+    for l in range(len(C2[0])):
+        part_of_rock = C2[0][l]
+        if d == "<":
+            new_r = part_of_rock * 2
+            # left wall
+            if new_r & 0b10000000:
+                return
+        else:
+            new_r = part_of_rock // 2
+            # right wall
+            if part_of_rock & 1:
+                return
+        #  overlap with existing rock?
+        if C1[C2[1] + l] & new_r:
+            return
+        R2.append(new_r)
+    for l in range(len(C2[0])):
+        C2[0][l] = R2[l]
+
+
+def down():
+    for l in range(len(C2[0])):
+        if C1[C2[1] + 1 + l] & C2[0][l]:
+            # hit bottom, you stop
+            # move rock from C2 to C1
+            for l in range(len(C2[0])):
+                C1[C2[1] + l] |= C2[0][l]
+            return True
     else:
-        return C[0] // 2
+        # move down
+        C2[1] += 1
+        return False
 
 
-# a rock appears at top
-# first move
-# down
-# it can go down 3 without hitting bottom
-c = 0
+rc = 0
+dc = 0
 while True:
-    print(c)
-    m = M[c]
-    print(m)
-    for i in range(len(R[c % 4])):
-        C.pop(0)
-    for i in range(len(R[c % 4]) - 1, -1, -1):
-        C.insert(0, R[c % 4][i])
-    draw_chamber()
-    # move first
-    C[0] = move(c)
-    # before move: does it hit wall or previous rock
-    draw_chamber()
-    # down
-    C.pop(1)
-    C.insert(0, 0b0000000)
-    draw_chamber()
-    # move
-    C[0] = move(c)
-    draw_chamber()
-    C.pop(2)
-    C.insert(0, 0b0000000)
-    draw_chamber()
-    c += 1
+    # put rock in chamber2
+    C2 = [R[rc % 4].copy(), 0]
+    for i in range(3 + len(R[rc % 4])):
+        if C1[i] != 0:
+            C1.insert(0, 0b0000000)
+    while True:  # start moving, if hit bottom, stop
+        d = D[dc]  # direction
+        draw_chamber()
+        move(d)
+        draw_chamber()
+        # down
+        if down():
+            break
+        draw_chamber()
+        dc += 1
+    rc += 1
