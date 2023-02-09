@@ -82,7 +82,8 @@ while True:
     while True:
         d = get_direction(dc)
         move(d)
-        dc += 1
+        dc = (dc + 1) % LD
+        # dc += 1
         # draw_chamber()
         if down():
             break
