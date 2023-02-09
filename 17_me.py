@@ -5,9 +5,9 @@ LD = len(D)
 R = [
     [0b0011110],
     [0b0001000, 0b0011100, 0b0001000],
-    # [0b0000100, 0b0000100, 0b0011100],
-    # [0b0010000, 0b0010000, 0b0010000, 0b0010000],
-    # [0b0011000, 0b0011000],
+    [0b0000100, 0b0000100, 0b0011100],
+    [0b0010000, 0b0010000, 0b0010000, 0b0010000],
+    [0b0011000, 0b0011000],
 ]
 C1 = [0b1111111]
 C2 = []
@@ -60,29 +60,18 @@ def get_direction(dc):
 
 
 p1 = 2022
-# p1 = 13
-p2 = 1e12
-# get cycle
-cycle = LD * len(R)
+p2 = 1000000000000
 rc = 0
 dc = 0
+height = 0
 while True:
     C2 = [R[rc % len(R)].copy(), 0]
     for i in range(len(C1)):
         if C1[i] != 0:
             break
-    # if rc == cycle + 1:
-    #     rocks_height = len(C1) - i - 1
-    #     prev_rock_height = len(R[(rc - 1) % len(R)])
-    #     one_cycle_height = rocks_height - prev_rock_height
-    #     height = (p1 // cycle - 1) * one_cycle_height
-    #     p1 = p1 % cycle
-    #     rc = 1
-    if rc == p1:
-        # if rc == p2:
+    # if rc == p1:
+    if rc == p2:
         print(len(C1) - i - 1)
-        # print(len(C1) - i)
-        # print("height", height)
         break
     if i <= len(R[rc % len(R)]) + 2:
         for _ in range(len(R[rc % len(R)]) + 3 - i):
