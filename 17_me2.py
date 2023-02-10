@@ -54,31 +54,45 @@ def draw(rock):
     print("=====================================")
 
 
+def signature(height):
+    return frozenset([(x, height - y) for (x, y) in C if height - y <= 30])
+
+
 C = set([(i, 0) for i in range(7)])
-p1 = 2022
 p2 = 1000000000000
 height = 0
-count = 0
+c = 0
 direction = -1
+cache = {}
+added = 0
 
-while True:
-    rock = get_piece(count, height + 4)
-    if count == 2022:
-        print(height)
-        break
+while c < p2:
+    rock = get_piece(c, height + 4)
     while True:
-        # draw(rock)
         direction = (direction + 1) % len(D)
         if D[direction] == "<":
             rock = move_left(rock)
         else:
             rock = move_right(rock)
-
         # draw(rock)
         rock = move_down(rock)
         if rock & C:
             rock = move_up(rock)
             C |= rock
-            count += 1
             height = max([y for _, y in C])
+            key = (direction, c % 5, signature(height))
+            if key in cache and c > 2022:
+                oldc, oldh = cache[key]
+                diffc = c - oldc
+                diffh = height - oldh
+                remaining_count = p2 - c
+                cycle = remaining_count // diffc
+                added += cycle * diffh
+                c += diffc * cycle
+            cache[key] = (c, height)
             break
+    c += 1
+    if c == 2022:
+        print(height)
+
+print(added + height)

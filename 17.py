@@ -108,8 +108,7 @@ while t < L:
 
             draw()
             SR = (i, t % 5, signature(R))
-            # if SR in SEEN and t >= 2022:
-            if SR in SEEN:
+            if SR in SEEN and t >= 2022:
                 (oldt, oldy) = SEEN[SR]
                 dy = top - oldy
                 dt = t - oldt
