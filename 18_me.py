@@ -1,44 +1,31 @@
-lines = open("18.in").read().strip().split("\n")
+lines = open("18.in").read().strip()
 
-S = set()
-Coor = []
-for line in lines:
+P = []
+for line in lines.split("\n"):
     x, y, z = [int(coor) for coor in line.split(",")]
-    Coor.append((x, y, z))
-    side = set()
-    v = []
-    for dx, dy, dz in [
-        (0, 0, 0),
-        (-1, 0, 0),
-        (0, -1, 0),
-        (0, 0, -1),
-        (-1, -1, 0),
-        (0, -1, -1),
-        (-1, 0, -1),
-        (-1, -1, -1),
-    ]:
-        v.append((x + dx, y + dy, z + dz))
-    side.add(frozenset((v[0], v[1], v[4], v[2])))  # up
-    side.add(frozenset((v[0], v[2], v[5], v[3])))  # right
-    side.add(frozenset((v[0], v[1], v[6], v[3])))  # back
-    side.add(frozenset((v[7], v[4], v[1], v[6])))  # left
-    side.add(frozenset((v[7], v[4], v[2], v[5])))  # front
-    side.add(frozenset((v[7], v[6], v[3], v[5])))  # down
-    S ^= side
+    P.append((x, y, z))
 
-print(len(S))
-# print(Coor)
-maxx = max([x for x, _, _ in Coor])
-maxy = max([y for _, y, _ in Coor])
-maxz = max([z for _, _, z in Coor])
 
-for s in S:
-    print(s)
-    # ss0 = 0
-    # ss1 = 0
-    # ss2 = 0
-    # for ss in s:
-    #     print(ss)
-    #     ss0 += ss[0]
-    #     ss1 += ss[1]
-    #     ss2 += ss[2]
+def reach_outside(x, y, z):
+    if (x, y, z) in P:
+        return False
+    return True
+
+
+ans = 0
+for x, y, z in P:
+    print(x, y, z)
+    if reach_outside(x + 1, y, z):
+        ans += 1
+    if reach_outside(x - 1, y, z):
+        ans += 1
+    if reach_outside(x, y + 1, z):
+        ans += 1
+    if reach_outside(x, y - 1, z):
+        ans += 1
+    if reach_outside(x, y, z + 1):
+        ans += 1
+    if reach_outside(x, y, z - 1):
+        ans += 1
+
+print(ans)
