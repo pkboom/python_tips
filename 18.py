@@ -65,5 +65,5 @@ def solve(part):
     return ans
 
 
-# print(solve(1))
+print(solve(1))
 print(solve(2))
