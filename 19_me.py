@@ -20,11 +20,8 @@ for k, v in B.items():
         t, m0, m1, m2, m3, r0, r1, r2, r3 = Q.popleft()
         if (t, m0, m1, m2, m3, r0, r1, r2, r3) in SEEN:
             continue
-        if t < 20:
-            SEEN.add((t, m0, m1, m2, m3, r0, r1, r2, r3))
         if t < 1:
-            if geo_max < m3:
-                geo_max = m3
+            geo_max = max(geo_max, m3)
             continue
         if m0 >= v[4] and m2 >= v[5]:
             Q.append(
