@@ -4,6 +4,7 @@ import math
 from copy import deepcopy
 from collections import defaultdict, deque
 
+# infile = sys.argv[1] if len(sys.argv) > 1 else "example.in"
 infile = sys.argv[1] if len(sys.argv) > 1 else "19.in"
 data = open(infile).read().strip()
 lines = [x for x in data.split("\n")]
@@ -17,7 +18,6 @@ def solve(Co, Cc, Co1, Co2, Cg1, Cg2, T):
     SEEN = set()
     while Q:
         state = Q.popleft()
-        print(state)
         o, c, ob, g, r1, r2, r3, r4, t = state
 
         best = max(best, g)
@@ -39,7 +39,6 @@ def solve(Co, Cc, Co1, Co2, Cg1, Cg2, T):
             ob = t * Cg2 - r3 * (t - 1)
 
         state = (o, c, ob, g, r1, r2, r3, r4, t)
-        print(state)
 
         if state in SEEN:
             continue
@@ -93,6 +92,7 @@ for i, line in enumerate(lines):
             geode_cost_clay,
             32,
         )
+        print(s2)
         p2 *= s2
 print(p1)
 print(p2)
