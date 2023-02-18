@@ -22,6 +22,10 @@ def solve(part):
                     break
             while X[0][0] != i:
                 X.append(X.popleft())
+            if i == 17:
+                with open("20.json", "w") as file:
+                    for x in X:
+                        file.write(str(x[1]) + "\n")
             val = X.popleft()
             to_pop = val[1]
             to_pop %= len(X)
@@ -33,6 +37,7 @@ def solve(part):
     for j in range(len(X)):
         if X[j][1] == 0:
             break
+    print(list(X))
     return (
         X[(j + 1000) % len(X)][1]
         + X[(j + 2000) % len(X)][1]
@@ -40,5 +45,6 @@ def solve(part):
     )
 
 
-print(solve(1))
-print(solve(2))
+solve(1)
+# print(solve(1))
+# print(solve(2))

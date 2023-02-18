@@ -10,6 +10,10 @@ for x in X:
         if Y[0] == x:
             break
         Y.append(Y.pop(0))
+    if x == -9961:
+        with open("20_me.json", "w") as file:
+            for xx in Y:
+                file.write(str(xx) + "\n")
     y = Y.pop(Y.index(x))
     new_key = y % len(Y)
     for j in range(new_key):
@@ -18,11 +22,13 @@ for x in X:
 
 # print(Y)
 index = Y.index(0)
-print(Y[(index + 1000) % len(Y)])
-print(Y[(index + 2000) % len(Y)])
-print(Y[(index + 3000) % len(Y)])
-print(
-    (Y[(index + 1000) % len(Y)])
-    + (Y[(index + 2000) % len(Y)])
-    + (Y[(index + 3000) % len(Y)])
-)
+
+print(Y)
+# print(Y[(index + 1000) % len(Y)])
+# print(Y[(index + 2000) % len(Y)])
+# print(Y[(index + 3000) % len(Y)])
+# print(
+#     (Y[(index + 1000) % len(Y)])
+#     + (Y[(index + 2000) % len(Y)])
+#     + (Y[(index + 3000) % len(Y)])
+# )
