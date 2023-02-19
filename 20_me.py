@@ -1,34 +1,38 @@
 from collections import deque
 
-lines = open("example.in").read().strip().split("\n")
+# lines = open("example.in").read().strip().split("\n")
 lines = open("20.in").read().strip().split("\n")
 
-X = [int(line) for line in lines]
-Y = [int(line) for line in lines]
-for x in X:
-    while True:
-        if Y[0] == x:
+
+def solve(p):
+    if p == 2:
+        X = [int(line) * 811589153 for line in lines]
+    else:
+        X = [int(line) for line in lines]
+    X = deque(list(enumerate(X)))
+    for mixing in range(10 if p == 2 else 1):
+        for i in range(len(X)):
+            for j in range(len(X)):
+                if X[j][0] == i:
+                    break
+            for _ in range(j):
+                X.append(X.popleft())
+            x = X.popleft()
+            val = x[1]
+            val = val % len(X)
+            for _ in range(val):
+                X.append(X.popleft())
+            X.append(x)
+
+    for i, x in enumerate(X):
+        if x[1] == 0:
             break
-        Y.append(Y.pop(0))
-    if x == -9961:
-        with open("20_me.json", "w") as file:
-            for xx in Y:
-                file.write(str(xx) + "\n")
-    y = Y.pop(Y.index(x))
-    new_key = y % len(Y)
-    for j in range(new_key):
-        Y.append(Y.pop(0))
-    Y.append(y)
+    print(
+        (X[(i + 1000) % len(X)][1])
+        + (X[(i + 2000) % len(X)][1])
+        + (X[(i + 3000) % len(X)][1])
+    )
 
-# print(Y)
-index = Y.index(0)
 
-print(Y)
-# print(Y[(index + 1000) % len(Y)])
-# print(Y[(index + 2000) % len(Y)])
-# print(Y[(index + 3000) % len(Y)])
-# print(
-#     (Y[(index + 1000) % len(Y)])
-#     + (Y[(index + 2000) % len(Y)])
-#     + (Y[(index + 3000) % len(Y)])
-# )
+solve(1)
+solve(2)
