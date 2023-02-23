@@ -6,48 +6,38 @@ lines = open("example.in").read().split("\n\n")
 map = [line for line in lines[:-1][0].split("\n")]
 path = lines[-1]
 
-print(map, path)
+move = (1, 0)
+D = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
-c = 0
-direction = ""
-move = ""
-point = [0, 0]
-while c < len(path):
-    move += path[c]
-    if path[c] == "R" or path[c] == "L":
-        direction = move[-1]
-        move = int(move[:-1])
+
+def get_direction(d):
+    return D[(D.index(move) + 1) % 4] if d == "R" else D[(D.index(move) - 1) % 4]
+
+
+i = 0
+step = ""
+p = [0, 0]
+while i < len(path):
+    if path[i] == "R" or path[i] == "L":
+        move = get_direction(path[i])
+    else:
+        step += path[i]
+    if i == len(path) - 1 or path[i + 1] == "R" or path[i + 1] == "L":
+        c, r = move
         dc = 0
-        while dc < move:
-            if direction == "R":
-                while True:
-                    tile = map[point[0]][point[1]]
-                    if tile != " ":
-                        break
-                    point[1] = (point[1] + 1) % len(map[0])
-                print(point)
-                if tile == ".":
-                    point[1] += 1
-                    dc += 1
-                elif tile == "#":
-                    point[1] -= 1
-                    print(point)
-                    break
-            else:
-                while True:
-                    tile = map[point[0]][point[1]]
-                    if tile != " ":
-                        break
-                    point[0] = (point[0] + 1) % len(map)
-                if tile == ".":
-                    point[0] += 1
-                    dc += 1
-                elif tile == "#":
-                    point[0] -= 1
-                    break
-                print(point)
-
-        print(move, direction)
-        move = ""
-        direction = ""
-    c += 1
+        while dc < int(step):
+            p[0] = (p[0] + c) % len(map[0])
+            p[1] = (p[1] + r) % len(map)
+            t = map[p[1]][p[0]]
+            if t == " ":
+                continue
+            if t == ".":
+                print(p)
+                x_tile, y_tile = p
+                dc += 1
+            elif t == "#":
+                p = [x_tile, y_tile]
+                break
+        print(p)
+        step = ""
+    i += 1
