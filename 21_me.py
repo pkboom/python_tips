@@ -21,7 +21,7 @@ while M2:
         if m1 in M1 and m2 in M1:
             if isinstance(M1[m1], int) and isinstance(M1[m2], int):
                 M1[k] = int(eval(str(M1[m1]) + o + str(M1[m2])))
-                print(M1[k])
+                # print(M1[k])
             else:
                 for i in [M1[m1], M1[m2]]:
                     if isinstance(i, int):
@@ -30,7 +30,8 @@ while M2:
                 M1[k] = "(" + str(M1[m1]) + o + str(M1[m2]) + ")"
             M2.pop(k, None)
             break
-# pop O and X and perform operation in revere way
+
+
 def get_operation(o):
     match o:
         case "+":
@@ -46,10 +47,9 @@ def get_operation(o):
 ans = X.pop()
 O.pop()
 while O:
-    print(str(ans) + get_operation(O[-1]) + str(X[-1]))
+    # print(str(ans) + get_operation(O[-1]) + str(X[-1]))
     ans = eval(str(ans) + get_operation(O.pop()) + str(X.pop()))
-    print(ans)
 print(ans)
-
-
+# 9535830990200
+# 113627984505092 55897899750372
 # print(M1["root"])
