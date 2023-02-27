@@ -58,9 +58,11 @@ def getRegionAndCoord(x, y):
 #  2   2
 def getNewRegionAndCoord(r, x, y, d):
     # return region, x, y, d
+    len = CUBE - 1 
     return {
-        (4, 0): (6, 3-y, 0, 1),
-        (5, 1): (2, x, 3,3)
+        (4, 0): (6, len-y, 0, 1),
+        (5, 1): (2, len-x, len, 3),
+        (3, 3): (1, 0, x, 3)
     }[(r,d)]
 
 def convertToOldCoord(r, x,y) :
@@ -89,26 +91,21 @@ def solve(part):
                 y = (y + r) % R
                 x = (x + c) % C
                 t = M[y][x]
-                print(x, y)
+                print(x, y, t)
                 if t == ".":
                     nx, ny = x, y
                     dc += 1
                     t = M[(y + r) % R][(x + c) % C]
                     if (y + r == R or x + c == C or t == " ") and part == 2:
-                        # get current region and coord
-                        # convert it to new coord in new region
-                        # move
-                        # convert it back to general coord
-                        region,nx, ny = getRegionAndCoord(x, y)
-                        print("x,y,region,ny,ny: ", x,y,region,nx,ny) 
-                        region, nx, ny,d = getNewRegionAndCoord(region, nx, ny, d)
-                        print("region, nx,ny,d: ",region, nx,ny,d) 
-                        x, y = convertToOldCoord(region, nx, ny) 
-                        print("x,y,d: ",x,y,d) 
-                        # new code for this region
-                        # step forward
-                        # convert to general coord
-                elif t == "#":
+                        dc += 1
+                        region,rx, ry = getRegionAndCoord(x, y)
+                        print("x, y, region, ry, ry: ", x, y, region, rx, ry) 
+                        region, rx, ry,d = getNewRegionAndCoord(region, rx, ry, d)
+                        print("new region, rx, ry, d: ",region, rx, ry, d) 
+                        x, y = convertToOldCoord(region, rx, ry) 
+                        t = M[y][x]
+                        print("x,y,d,t: ",x,y,d,t) 
+                if t == "#":
                     x, y = nx, ny
                     break
             step = ""
@@ -118,4 +115,3 @@ def solve(part):
 
 # print(solve(1))
 print(solve(2))
-# print(1000 * (y + 1) + 4 * (x + 1) + D.index(move))
