@@ -1,17 +1,21 @@
 from collections import deque
 
-# lines = open("example.in").read().split("\n\n")
-lines = open("22.in").read().split("\n\n")
+example = True
+# example = False
+if example:
+    lines = open("example.in").read().split("\n\n")
+else:
+    lines = open("22.in").read().split("\n\n")
 
 M = [line for line in lines[:-1][0].split("\n")]
 instr = lines[-1]
 R = len(M)
 C = max(len(x) for x in M)
-CUBE = C // 4
-for x in range(R):
-    while len(M[x]) < C:
-        M[x] += " "
-    assert len(M[x]) == C, (len(M[x]), C)
+CUBE = C // (4 if example else 3)
+for r in range(R):
+    while len(M[r]) < C:
+        M[r] += " "
+    assert len(M[r]) == C, (len(M[r]), C)
 D = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
 
@@ -22,38 +26,46 @@ def getDirection(t, d):
         return (d + 3) % 4
     assert False, (t, d)
 
-
-# .12
-# .3.
-# 45.
-# 6
-
-REGION = ((1, 0), (2, 0), (1, 1), (0, 2), (1, 2), (0, 3))
+if example:
+    # ..1.
+    # 234.
+    # ..56
+    REGION = ((2, 0), (0, 1), (1, 1), (2, 1), (2, 2), (3, 2)) # for example
+else:
+    # .12
+    # .3.
+    # 45.
+    # 6
+    REGION = ((1, 0), (2, 0), (1, 1), (0, 2), (1, 2), (0, 3)) # for 22
 
 
 def getRegionAndCoord(x, y):
     for i in range(len(REGION)):
         xx, yy = REGION[i]
         if CUBE * xx <= x < CUBE * (xx + 1) and CUBE * yy <= y < CUBE * (yy + 1):
-            return (i + 1, CUBE * xx + x, CUBE * yy + y)
+            return [i + 1, x - (CUBE * xx), y - (CUBE * yy)]
 
-    # if CUBE * 1 <= x < CUBE * 2 and CUBE * 0 <= y < CUBE * 1 :
-    # region 1
-    # if CUBE * 2 <= x < CUBE * 3 and CUBE * 0 <= y < CUBE * 1 :
-    # region 2
-    # if CUBE * 1 <= x < CUBE * 2 and CUBE * 1 <= y < CUBE * 2 :
-    # region 3
-    # if CUBE * 0 <= x < CUBE * 1 and CUBE * 2 <= y < CUBE * 3 :
-    # region 4
-    # if CUBE * 1 <= x < CUBE * 2 and CUBE * 2 <= y < CUBE * 3 :
-    # region 5
-    # if CUBE * 0 <= x < CUBE * 1 and CUBE * 3 <= y < CUBE * 4 :
-    # region 6
-    # get current region
-    # using d, get new region and new d
-    # using new region and new d, get new coord
-    #
+#  1   1
+# 234 462
+#  5   5
 
+#  1   1
+# 346 623
+#  5   5 
+
+#  4   4
+# 613 356
+#  2   2
+def getNewRegionAndCoord(r, x, y, d):
+    # return region, x, y, d
+    return {
+        (4, 0): (6, 3-y, 0, 1),
+        (5, 1): (2, x, 3,3)
+    }[(r,d)]
+
+def convertToOldCoord(r, x,y) :
+    xx,yy = REGION[r-1]
+    return x + (CUBE * xx), y + (CUBE * yy)
 
 def solve(part):
     d = 0
@@ -61,8 +73,9 @@ def solve(part):
     step = ""
     x, y = 0, 0
     for m in M[0]:
-        if m == " ":
-            x += 1
+        if m != " ":
+            break
+        x += 1
     while i < len(instr):
         if instr[i] == "R" or instr[i] == "L":
             d = getDirection(instr[i], d)
@@ -70,22 +83,31 @@ def solve(part):
         else:
             step += instr[i]
         if i == len(instr) - 1 or instr[i + 1] == "R" or instr[i + 1] == "L":
-            c, r = D[d]
             dc = 0
             while dc < int(step):
+                c, r = D[d]
                 y = (y + r) % R
                 x = (x + c) % C
                 t = M[y][x]
                 print(x, y)
-                if t == " " and part == 2:
-                    nx, ny = getRegionAndCoord(x, y)
-                    # new code for this region
-                    # step forward
-                    # convert to general coord
-                    pass
                 if t == ".":
                     nx, ny = x, y
                     dc += 1
+                    t = M[(y + r) % R][(x + c) % C]
+                    if (y + r == R or x + c == C or t == " ") and part == 2:
+                        # get current region and coord
+                        # convert it to new coord in new region
+                        # move
+                        # convert it back to general coord
+                        region,nx, ny = getRegionAndCoord(x, y)
+                        print("x,y,region,ny,ny: ", x,y,region,nx,ny) 
+                        region, nx, ny,d = getNewRegionAndCoord(region, nx, ny, d)
+                        print("region, nx,ny,d: ",region, nx,ny,d) 
+                        x, y = convertToOldCoord(region, nx, ny) 
+                        print("x,y,d: ",x,y,d) 
+                        # new code for this region
+                        # step forward
+                        # convert to general coord
                 elif t == "#":
                     x, y = nx, ny
                     break
