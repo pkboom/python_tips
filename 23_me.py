@@ -1,44 +1,40 @@
 from collections import deque
 
 lines = open("23.in").read().strip().split("\n")
-lines = open("example.in").read().strip().split("\n")
+# lines = open("example.in").read().strip().split("\n")
 
-E = deque() # elves positions
+E = deque()
 for j, line in enumerate(lines):
     for i, l in enumerate(line):
         if l == '#':
             E.append((i,j))
 elves = len(E)
 
-# move each elf
 mc = 0 # move counter
-# simulate an elf
 P = [
     ((-1,-1), (0,-1), (1,-1)),
     ((1,1), (0,1), (-1,1)), 
     ((-1,1), (-1,0), (-1,-1)),
     ((1,-1), (1,0), (1,1)),
 ]
-old_positions = deque()
 new_positions = deque()
-# check surrounding tiles: 
-for _ in range(4):
+
+for _ in range(10):
     for ex,ey in E:
         for dx, dy in ((-1,0), (-1,-1), (0,-1), (1,-1), (1,0), (1,1), (0,1), (-1,1)):
             nx, ny = ex + dx, ey + dy
-            if (nx,ny) in E: 
-                print("(ex,ey) (nx,ny)", (ex,ey), (nx,ny))
+            if (nx, ny) in E: 
                 # search for a new position
                 break
         else:
             print("elf", (ex,ey), "is no elves around it")
             new_positions.append((ex,ey))
-            break
+            continue
     
         # search for a new position
         mmc = mc % 4
-        for i in range(mc, mc+4):
-            # search one line
+        for i in range(mmc, mmc+4):
+            # search one side 
             side = P[i % 4]
             for dx, dy in side :
                 nx, ny = ex + dx, ey + dy
@@ -46,13 +42,13 @@ for _ in range(4):
                     break
             else:
                 # we have an empty line
+                print('(ex, ey) (dx, dy), (nx, ny)', (ex, ey), side[1], (ex + side[1][0], ey+side[1][1]))
                 new_positions.append((ex + side[1][0], ey+side[1][1]))
                 break
         else:
-            print((ex,ey), "surrounded by elves")
+            # print((ex,ey), "surrounded by elves")
             new_positions.append((ex,ey))
     
-    mc += 1
     
     for _ in range(len(new_positions)):
         np = new_positions.popleft()
@@ -70,6 +66,10 @@ for _ in range(4):
     y_max = max(y for _, y in E)
     y_min = min(y for _, y in E)
     print(x_min, x_max, y_min, y_max)
+
+    mc += 1
+    new_positions.clear()
+    empty = 0
     for j in range(y_min, y_max+1):
         a = ''
         for i in range(x_min, x_max+1):
@@ -77,32 +77,8 @@ for _ in range(4):
                 a += '#'
             else:
                 a += '.'
+                empty += 1
         print(a)
+    print('----------------------------')
 
-
-print(E)
-print(new_positions)
-new_positions.clear()
-quit()
-
-
-
-
-# # if there is no elf, do nothing
-# # if this is an elf, next proposal.
-
-# quit()
-# d = ((-1,-1),(0,-1),(1,-1))
-# d = ((-1,-1),(0,-1),(1,-1))
-# d = ((-1,-1),(0,-1),(1,-1))
-# d = ((-1,-1),(0,-1),(1,-1))
-# instr = lines[-1]
-# r = len(m)
-# c = max(len(x) for x in m)
-# cube = c // (4 if example else 3)
-# for r in range(r):
-#     while len(m[r]) < c:
-#         m[r] += " "
-#     assert len(m[r]) == c, (len(m[r]), c)
-# d = ((1, 0), (0, 1), (-1, 0), (0, -1))
-
+print(empty)
