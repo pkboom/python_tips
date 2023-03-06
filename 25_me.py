@@ -28,9 +28,15 @@ for line in lines:
 
 to_fiv = {
     ('1', '1'): '2',
+    ('1', '0'): '1',
+    ('=', '1'): '1-',
+    ('=', '0'): '1=',
+    ('-', '1'): '10',
+    ('-', '0'): '1-',
 }
 fiv = 0
-DECIMAL = DECIMAL[::-1] 
+# DECIMAL = DECIMAL[::-1] 
+DECIMAL = [DECIMAL[-1]]
 print(DECIMAL)
 while DECIMAL:
     n = DECIMAL.pop()
@@ -52,81 +58,35 @@ while DECIMAL:
             else :
                 fiv = '2' + fiv
         elif r == 0:
-            fiv = '0' + fiv
+            print('len(fiv)', len(fiv))
+            print('c', c)
+            if len(fiv) == c:
+                fiv = to_fiv[('-', fiv[0])] + fiv[1:]
+            else :
+                fiv = '0' + fiv
         elif r == 3:
-            fiv = '1=' + fiv
+            if len(fiv) == c:
+                print(to_fiv[('=', fiv[0])])
+                print(fiv[0])
+                print(fiv[1:])
+                fiv = to_fiv[('=', fiv[0])] + fiv[1:]
+            else :
+                fiv = '1=' + fiv
+            c += 1
         elif r == 4:
-            fiv = '1-' + fiv
+            if len(fiv) == c:
+                print(to_fiv[('=', fiv[0])])
+                print(fiv[0])
+                print(fiv[1:])
+                fiv = to_fiv[('-', fiv[0])] + fiv[1:]
+            else :
+                fiv = '1-' + fiv
+            c += 1
         print('fiv',fiv)
         print('-' * 20)
+        c += 1
         if q == 0:
             break
-        c += 1
-    if n == '20':
-        quit()
+    # if n == '12345':
+    #     quit()
 quit()
-
-exit = [i for i, l in enumerate(lines[-1]) if l == '.']
-exit = (exit[0], len(lines)-1)
-
-print('start', start)
-print('exit', exit)
-
-D = { '>': (1,0), '<': (-1,0), '^': (0,-1), 'v': (0,1) }
-b_pos = []
-b_dir = []
-for j, line in enumerate(lines[1:-1]):
-    for i, l in enumerate(line):
-        if l != '#' and l != '.':
-            b_pos.append((i, j+1))
-            b_dir.append(D[l])
-
-w = len(lines[0])
-h = len(lines)
-E = deque([start])
-cc = 0
-p = 1
-while True:
-    # move blizzard 
-    c = 0
-    while c < len(b_pos):
-        x, y= b_pos[c]
-        dx, dy= b_dir[c]
-        nx, ny = x + dx, y + dy
-        if nx < 1:
-            nx = w - 2
-        elif nx > w - 2:
-            nx = 1
-        if ny < 1:
-            ny = h - 2
-        elif ny > h - 2:
-            ny = 1
-        b_pos[c] = (nx, ny)
-        b_dir[c] = (dx, dy)
-        c += 1
-    cc += 1
-
-    cache = set()
-    while E:
-        ex, ey = E.popleft() 
-        if (ex, ey) in b_pos:
-            continue
-        for dx, dy in ((-1,0),  (0,-1),  (1,0),  (0,1)):
-            nx, ny = ex + dx, ey + dy
-            if (nx < 1 or nx > w - 2 or ny < 1 or ny > h - 2) and (nx, ny) != exit: 
-                # hit wall 
-                continue
-            cache.add((nx, ny))
-        else:
-            cache.add((ex, ey))
-
-    if exit in cache:
-        print('arrived at exit({})'.format(p), cc + 1)
-        if p == 3:
-            break
-        start, exit = exit, start
-        E = deque([start])
-        p += 1 
-    else:
-        E = deque(cache)
-
