@@ -4,7 +4,6 @@ from copy import deepcopy
 lines = open("23.in").read().strip().split("\n")
 # lines = open("example.in").read().strip().split("\n")
 
-
 E = set()
 for j, line in enumerate(lines):
     for i, l in enumerate(line):
